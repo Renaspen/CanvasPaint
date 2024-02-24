@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Canva</title>
+       
+        <style>
+            body{
+                background-color: #166986 ;
+            }
+            canvas{
+                background-color: beige;
+                border: solid gray 3px;
+            }
+        </style>
+        <script>
+            window.onload=function(){
+                const color="gray";
+                const canvas= document.getElementById("MiCanvas");
+                var bandera = false;
+                const disX= disY=25;
+                const ancho= 0.5;
+                if(canvas && canvas.getContext){
+                    var pos={};
+                    var ctx= canvas.getContext("2d");
+                    if(ctx){
+                        function ajusta(xx, yy){
+                            var poscanvas= canvas.getBoundingClientRect();
+                            var x= xx-poscanvas.left;
+                            var y= yy-poscanvas.top;
+                            return{x:x,y:y}
+                        }
+                        function dibuja(inicio,fin){
+                            ctx.beginPath();
+                            ctx.strokeStyle="#080B25";
+                            ctx.lineWidth= 2;
+                            ctx.moveTo(inicio.x,inicio.y);
+                            ctx.lineTo(fin.x,fin.y);
+                            ctx.stroke();
+                        }
+                        canvas.onmousedown=function(e){
+                            pos= ajusta(e.clientX,e.clientY);
+                            bandera= true;
+                        }
+                        canvas.onmouseup=function(e){
+                            bandera= false;
+                        }
+                        canvas.onmousemove=function(e){
+                            if(bandera){
+                                var fin= ajusta(e.clientX,e.clientY);
+                                dibuja(pos,fin);
+                                pos=fin;
+                            }
+                        }
+                        pintargrid(ctx,disX, disY, color, ancho);
+                    }else{
+                        alert("Error");
+                    }
+                }
+            }
+            const pintargrid=(ctx, disX, disY, color, ancho)=>{
+                ctx.strokeStyle=color;
+                ctx.lineWidth=ancho;
+                for(var i=disX+ancho; i<ctx.canvas.width; i+=disX){
+                    ctx.beginPath();
+                    ctx.moveTo(i,0);
+                    ctx.lineTo(i,ctx.canvas.height);
+                    ctx.stroke();
+                }
+                for(var i=disY+ancho; i<ctx.canvas.width; i+=disY){
+                    ctx.beginPath();
+                    ctx.moveTo(0,i);
+                    ctx.lineTo(ctx.canvas.width,i);
+                    ctx.stroke();
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <h1>DIBUJA</h1>
+        <canvas id="MiCanvas" width="600" height="400"></canvas>
+    </body>
+</html>
